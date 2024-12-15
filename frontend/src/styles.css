@@ -74,6 +74,21 @@ nav {
   background-color: #2f85cc;
 }
 
+.dashboard-button-nav {
+  text-decoration: none;
+  color: #fff;
+  background-color: #007bff;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.dashboard-button-nav:hover {
+  background-color: #2f85cc;
+}
+
+
 /* Icônes */
 .icon {
   margin-right: 8px;
@@ -151,7 +166,6 @@ h2 {
   justify-content: center; 
   gap: 20px; 
   align-items: start;
-  padding: 20px; 
   flex-wrap: wrap; 
   padding: 20px; 
   perspective: 1000px; 
@@ -184,25 +198,37 @@ h2 {
 }
 
 
+.project-list {
+  display: flex;
+  flex-direction: column; /* Aligner les cartes en colonne */
+  align-items: center; /* Centrer les cartes horizontalement */
+  gap: 20px; /* Espacement entre les cartes */
+  padding: 20px; /* Ajouter un padding pour éviter que ça touche les bords */
+}
+
 .project-card-dashboard {
-  grid-template-columns: repeat(3, 350px);
-  display: grid;
-  justify-content: center;
   background: #fff;
   border-radius: 10px;
-  margin-top: 10px;
-  width: 300px;
-  height: 200px;
+  width: 500px; /* Largeur fixe */
+  height: auto; /* Hauteur automatique */
   padding: 20px;
   border: 1px solid #ccc;
   text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.project-card-dashboard img {
+  max-width: 100%;
+  height: auto; /* Ajuste les images pour éviter le débordement */
+  border-radius: 8px;
 }
 
 .project-card-dashboard:hover {
-    cursor: pointer;
-    background-color: #f0f0f0;
-    transition: transform 0.2s ease, background-color 0.2s ease;
+  cursor: pointer;
+  background-color: #f0f0f0;
 }
+
 
 .project-card-button-dashboard{
   display: flex;
@@ -262,15 +288,6 @@ h2 {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
   object-fit: cover; 
 }
-
-
-.project-card-dashboard img {
-  margin-bottom: 10px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  object-fit: cover;
-}
-
 
 @media (max-width: 900px) {
   .project-grid {
@@ -385,7 +402,7 @@ footer {
 }
 
 .logout-button {
-  background-color: #ff4b4b;
+  background-color: #007bff;
   border: none;
   color: white;
   padding: 10px 20px;
@@ -396,7 +413,7 @@ footer {
 }
 
 .logout-button:hover {
-  background-color: #e03838;
+  background-color: #005fc4;
 }
 
 .dashboard-section {

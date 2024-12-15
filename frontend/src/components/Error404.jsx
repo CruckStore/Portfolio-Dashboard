@@ -5,6 +5,7 @@ function Error404() {
   return (
     <div style={styles.container}>
       <h1 style={styles.header}>404</h1>
+      <p style={styles.emoji}>😧</p>
       <p style={styles.text}>Oups ! La page que vous cherchez n'existe pas.</p>
       <Link to="/" style={styles.button}>
         Retour à l'accueil
@@ -24,6 +25,10 @@ const styles = {
     fontSize: '6rem',
     color: '#ff4b4b',
     margin: '0',
+  },
+  emoji: {
+    fontSize: '4rem',
+    margin: '20px 0',
   },
   text: {
     fontSize: '1.5rem',

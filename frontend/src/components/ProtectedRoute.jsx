@@ -1,19 +1,18 @@
-import React, { useContext, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
-import { ContentContext } from '../context/ContentContext';
+import React, { useContext } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 function ProtectedRoute({ children }) {
-  const { isAuthenticated } = useContext(ContentContext);
+  const { user, loading } = useContext(AuthContext);
+  const location = useLocation();
 
-  const isLoggedIn = isAuthenticated || localStorage.getItem('isAuthenticated') === 'true';
+  // Display loading state while verifying authentication
+  if (loading) {
+    return <div>Chargement...</div>;
+  }
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      localStorage.removeItem('isAuthenticated'); 
-    }
-  }, [isLoggedIn]);
-
-  return isLoggedIn ? children : <Navigate to="/login" replace />;
+  // Redirect if the user is not authenticated
+  return user ? children : <Navigate to="/login" replace state={{ from: location }} />;
 }
 
 export default ProtectedRoute;

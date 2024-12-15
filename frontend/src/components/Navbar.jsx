@@ -1,30 +1,66 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faSignInAlt, faSignOutAlt, faTachometerAlt } from '@fortawesome/free-solid-svg-icons';
+import { AuthContext } from '../context/AuthContext';
 
 function Navbar() {
+  const { user, logout } = useContext(AuthContext);
+  const location = useLocation();
+  const navigate = useNavigate(); // Utilisation de navigate pour gérer les redirections
+
+  const isDashboardPage = location.pathname === '/dashboard';
+
   return (
     <nav>
       <ul className="navbar-container">
         {/* Liens centrés */}
         <div className="navbar-center">
           <li>
-            <Link to="/">
+            <button
+              className="logout-button"
+              onClick={() => navigate('/')}
+            >
               <FontAwesomeIcon icon={faHome} className="icon" /> Accueil
-            </Link>
+            </button>
           </li>
           <li>
-            <Link to="/about">À Propos</Link>
+            <button
+              className="logout-button"
+              onClick={() => navigate('/about')}
+            >
+              À Propos
+            </button>
           </li>
         </div>
 
-        {/* Bouton Login aligné à droite */}
+        {/* Bouton conditionnel aligné à droite */}
         <div className="navbar-right">
           <li>
-            <Link to="/dashboard" className="login-button-nav">
-              <FontAwesomeIcon icon={faSignInAlt} className="icon" /> Login
-            </Link>
+            {user ? (
+              isDashboardPage ? (
+                // Affiche Déconnexion uniquement sur /dashboard
+                <button onClick={logout} className="logout-button">
+                  <FontAwesomeIcon icon={faSignOutAlt} className="icon" /> Déconnexion
+                </button>
+              ) : (
+                // Affiche un bouton pour accéder au Dashboard sur les autres pages
+                <button
+                  className="logout-button"
+                  onClick={() => navigate('/dashboard')}
+                >
+                  <FontAwesomeIcon icon={faTachometerAlt} className="icon" /> Dashboard
+                </button>
+              )
+            ) : (
+              // Si non connecté, affiche le bouton Login
+              <button
+                className="logout-button"
+                onClick={() => navigate('/login')}
+              >
+                <FontAwesomeIcon icon={faSignInAlt} className="icon" /> Login
+              </button>
+            )}
           </li>
         </div>
       </ul>

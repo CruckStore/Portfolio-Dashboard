@@ -1,17 +1,18 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { ContentContext } from '../context/ContentContext';
+import { AuthContext } from '../context/AuthContext'; // Import du contexte d'authentification
 import { useNavigate } from 'react-router-dom';
 import Notification from '../components/Notification';
 import imageCompression from 'browser-image-compression';
 
-
 function Dashboard() {
   const { content, updateContent, logout } = useContext(ContentContext);
+  const { user } = useContext(AuthContext); // Accès au rôle utilisateur
   const [formData, setFormData] = useState({});
   const [projects, setProjects] = useState([]);
   const [newProject, setNewProject] = useState({ title: '', description: '', image: '' });
   const [editingIndex, setEditingIndex] = useState(null);
-  const [notification, setNotification] = useState(null); 
+  const [notification, setNotification] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,37 +31,24 @@ function Dashboard() {
       showNotification('Aucun fichier sélectionné.', 'error');
       return;
     }
-  
     if (!file.type.startsWith('image/')) {
       showNotification('Veuillez télécharger un fichier image valide.', 'error');
       return;
     }
-  
     if (file.size > 5 * 1024 * 1024) {
-      showNotification('La taille de l\'image est trop grande. Limite : 5 Mo.', 'error');
+      showNotification("La taille de l'image est trop grande. Limite : 5 Mo.", 'error');
       return;
     }
-  
     try {
-      const options = {
-        maxSizeMB: 0.5, // Taille maximale (500 KB)
-        maxWidthOrHeight: 1024, // Dimension maximale (1024px)
-        useWebWorker: true,
-      };
-  
+      const options = { maxSizeMB: 0.5, maxWidthOrHeight: 1024, useWebWorker: true };
       const compressedFile = await imageCompression(file, options);
-  
-      console.log('Taille après compression :', compressedFile.size / 1024, 'Ko'); // Log la taille de l'image compressée
-  
       const base64 = await imageCompression.getDataUrlFromFile(compressedFile);
-  
       setNewProject({ ...newProject, image: base64 });
       showNotification('Image téléchargée et compressée avec succès !', 'success');
     } catch (error) {
-      console.error('Erreur lors de la compression de l\'image:', error);
-      showNotification('Erreur lors du téléchargement de l\'image.', 'error');
+      showNotification("Erreur lors du téléchargement de l'image.", 'error');
     }
-  };  
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -72,7 +60,7 @@ function Dashboard() {
       const updatedProjects = [...projects, newProject];
       setProjects(updatedProjects);
       saveProjects(updatedProjects);
-      setNewProject({ title: '', description: '' });
+      setNewProject({ title: '', description: '', image: '' });
       showNotification('Projet ajouté avec succès !', 'success');
     } else {
       showNotification('Veuillez remplir tous les champs.', 'error');
@@ -85,16 +73,10 @@ function Dashboard() {
   };
 
   const handleSaveEditProject = () => {
-    if (!newProject.title || !newProject.description) {
-      showNotification('Veuillez remplir tous les champs.', 'error');
+    if (!newProject.title || !newProject.description || !newProject.image) {
+      showNotification('Veuillez remplir tous les champs et ajouter une image.', 'error');
       return;
     }
-  
-    if (!newProject.image) {
-      showNotification('Veuillez ajouter une image.', 'error');
-      return;
-    }
-  
     const updatedProjects = projects.map((project, i) =>
       i === editingIndex ? newProject : project
     );
@@ -104,13 +86,11 @@ function Dashboard() {
     setEditingIndex(null);
     showNotification('Projet modifié avec succès !', 'success');
   };
-  
 
   const handleCancelEdit = () => {
     setEditingIndex(null);
-    setNewProject({ title: '', description: '' }); 
+    setNewProject({ title: '', description: '', image: '' });
   };
-  
 
   const handleDeleteProject = (index) => {
     const updatedProjects = projects.filter((_, i) => i !== index);
@@ -131,13 +111,7 @@ function Dashboard() {
         },
       },
     };
-
     updateContent(updatedContent);
-  };
-
-  const handleSave = () => {
-    saveProjects(projects);
-    showNotification('Contenu mis à jour avec succès !', 'success');
   };
 
   const handleLogout = () => {
@@ -148,13 +122,12 @@ function Dashboard() {
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
-        <h1>Tableau de Bord Admin</h1>
-        <button onClick={handleLogout} className="logout-button">
-          Déconnexion
-        </button>
+        <h1>
+          Tableau de Bord 
+          {user?.role === 'admin' ? ' (Admin)' : ' (Lecteur)'} - {user?.username || ''}
+        </h1>
       </header>
 
-      {/* Notification */}
       {notification && (
         <Notification
           message={notification.message}
@@ -174,6 +147,7 @@ function Dashboard() {
               name="title"
               value={formData.title || ''}
               onChange={handleChange}
+              disabled={user?.role !== 'admin'} // Désactive l'édition pour les éditeurs
             />
           </label>
           <label>
@@ -183,6 +157,7 @@ function Dashboard() {
               name="subtitle"
               value={formData.subtitle || ''}
               onChange={handleChange}
+              disabled={user?.role !== 'admin'}
             />
           </label>
           <label>
@@ -191,6 +166,7 @@ function Dashboard() {
               name="about"
               value={formData.about || ''}
               onChange={handleChange}
+              disabled={user?.role !== 'admin'}
             ></textarea>
           </label>
         </div>
@@ -199,40 +175,44 @@ function Dashboard() {
       {/* Gestion des projets */}
       <div className="dashboard-section">
         <h2>Gérer les Projets</h2>
-        <div className="dashboard-form">
-          <h3>{editingIndex !== null ? 'Modifier le Projet' : 'Ajouter un Projet'}</h3>
-          <label>
-            <span>Titre :</span>
-            <input
-              type="text"
-              value={newProject.title}
-              onChange={(e) => setNewProject({ ...newProject, title: e.target.value })}
-            />
-          </label>
-          <label>
-            <span>Description :</span>
-            <textarea
-              value={newProject.description}
-              onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
-            ></textarea>
-          </label>
-          <label>
-            <span>Image :</span>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-            />
-          </label>
-          {editingIndex !== null ? (
-            <div>
-              <button onClick={handleSaveEditProject} className="save-button">Enregistrer les Modifications</button>
-              <button onClick={handleCancelEdit} className="cancel-button">Annuler</button>
-            </div>
-          ) : (
-            <button onClick={handleAddProject} className="save-button">Ajouter le Projet</button>
-          )}
-        </div>
+        {user?.role === 'admin' && (
+          <div className="dashboard-form">
+            <h3>{editingIndex !== null ? 'Modifier le Projet' : 'Ajouter un Projet'}</h3>
+            <label>
+              <span>Titre :</span>
+              <input
+                type="text"
+                value={newProject.title}
+                onChange={(e) => setNewProject({ ...newProject, title: e.target.value })}
+              />
+            </label>
+            <label>
+              <span>Description :</span>
+              <textarea
+                value={newProject.description}
+                onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
+              ></textarea>
+            </label>
+            <label>
+              <span>Image :</span>
+              <input type="file" accept="image/*" onChange={handleImageUpload} />
+            </label>
+            {editingIndex !== null ? (
+              <div>
+                <button onClick={handleSaveEditProject} className="save-button">
+                  Enregistrer les Modifications
+                </button>
+                <button onClick={handleCancelEdit} className="cancel-button">
+                  Annuler
+                </button>
+              </div>
+            ) : (
+              <button onClick={handleAddProject} className="save-button">
+                Ajouter le Projet
+              </button>
+            )}
+          </div>
+        )}
 
         <div className="project-list">
           {projects.map((project, index) => (
@@ -247,20 +227,20 @@ function Dashboard() {
               )}
               <h4>{project.title}</h4>
               <p>{project.description}</p>
-              <div className="project-card-button-dashboard">
-                <button onClick={() => handleEditProject(index)} className="edit-button">
-                  Modifier
-                </button>
-                <button onClick={() => handleDeleteProject(index)} className="delete-button">
-                  Supprimer
-                </button>
-              </div>
+              {user?.role === 'admin' && (
+                <div className="project-card-button-dashboard">
+                  <button onClick={() => handleEditProject(index)} className="edit-button">
+                    Modifier
+                  </button>
+                  <button onClick={() => handleDeleteProject(index)} className="delete-button">
+                    Supprimer
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
       </div>
-
-      <button onClick={handleSave} className="save-button">Enregistrer les Modifications</button>
     </div>
   );
 }
