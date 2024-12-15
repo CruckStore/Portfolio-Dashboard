@@ -1,0 +1,548 @@
+/* Importer une police Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #f8f9fa;
+  --dark-color: #343a40;
+  --light-color: #fff;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--secondary-color);
+  color: var(--dark-color);
+}
+
+/* Navbar */
+nav {
+  background-color: var(--light-color);
+  box-shadow: 0 4px 6px var(--shadow-color);
+  padding: 10px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+nav ul {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--dark-color);
+  font-weight: 600;
+}
+
+nav a:hover {
+  color: var(--primary-color);
+}
+
+/* Variables */
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #f8f9fa;
+  --dark-color: #343a40;
+  --light-color: #fff;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --border-radius: 8px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  color: var(--dark-color);
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(135deg, #007bff, #6c63ff);
+  color: var(--light-color);
+  text-align: center;
+  padding: 360px 20px;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  margin: 0;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin: 20px 0;
+}
+
+.hero-button {
+  display: inline-block;
+  background: var(--light-color);
+  color: var(--primary-color);
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  font-weight: bold;
+  box-shadow: var(--shadow);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.hero-button:hover {
+  background: var(--dark-color);
+  color: var(--light-color);
+}
+
+/* Sections */
+section {
+  padding: 50px 20px;
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: var(--primary-color);
+}
+
+/* Projets */
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  perspective: 1000px; 
+}
+
+.project-card {
+  background: #fff;
+  border-radius: 10px;
+  margin-top: 10px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+.project-card-dashboard {
+  background: #fff;
+  border-radius: 10px;
+  margin-top: 10px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.project-card-dashboard:hover {
+    cursor: pointer;
+    background-color: #f0f0f0; /* Bleu très clair */
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.project-card-button-dashboard{
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.cancel-button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 30px;
+    background-color: #ff4b4b;
+    color: white;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.cancel-button:hover {
+  background-color: #cc2f2f;
+}
+
+
+.project-list {
+  margin-top: 20px;
+}
+
+.project-card h4 {
+  margin: 0;
+}
+
+.project-card:hover {
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+}
+
+.project-card h3,
+.project-card p {
+  transform: translateZ(0px); 
+}
+
+.project-card button {
+  margin: 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+@media (max-width: 900px) {
+  .project-grid {
+    grid-template-columns: repeat(2, 1fr); 
+  }
+}
+
+@media (max-width: 600px) {
+  .project-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.delete-button {
+  background: #ff4b4b;
+  color: white;
+}
+
+/* Bouton général */
+.save-button,
+.edit-button,
+.delete-button {
+  background: #ff4b4b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.save-button:hover,
+.edit-button:hover,
+.delete-button:hover {
+  background: #e63939; 
+}
+
+.save-button:active,
+.edit-button:active,
+.delete-button:active {
+  background: #cc2f2f; 
+  transform: translateY(0); 
+}
+
+
+
+/* Compétences */
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.skill-item {
+  background: var(--primary-color);
+  color: var(--light-color);
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  font-weight: bold;
+  box-shadow: var(--shadow);
+}
+
+/* Contact Section */
+.contact-button {
+  display: inline-block;
+  background: var(--primary-color);
+  color: var(--light-color);
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.contact-button:hover {
+  background: var(--dark-color);
+}
+
+/* Footer */
+footer {
+  background: var(--dark-color);
+  color: var(--light-color);
+  text-align: center;
+  padding: 10px 0;
+}
+
+
+.dashboard-container {
+  font-family: 'Poppins', sans-serif;
+  max-width: 1200px;
+  margin: 20px auto;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.dashboard-header {
+  background-color: #007bff;
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.logout-button {
+  background-color: #ff4b4b;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.logout-button:hover {
+  background-color: #e03838;
+}
+
+.dashboard-section {
+  padding: 20px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.dashboard-section h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.dashboard-form label {
+  display: block;
+  margin-bottom: 15px;
+}
+
+.dashboard-form span {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #333;
+}
+
+.dashboard-form input,
+.dashboard-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.dashboard-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.save-button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 30px;
+  background-color: #28a745;
+  color: white;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.save-button:hover {
+  background-color: #218838;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Variables globales */
+:root {
+  --primary-color: #007bff;
+  --dark-color: #343a40;
+  --light-color: #ffffff;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --error-color: #ff4b4b;
+}
+
+/* Fond de la page */
+.login-container {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Carte de connexion */
+.login-card {
+  background: var(--light-color);
+  box-shadow: 0 8px 16px var(--shadow-color);
+  border-radius: 8px;
+  padding: 30px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.login-card h1 {
+  margin: 0 0 10px;
+  color: var(--dark-color);
+  font-size: 2rem;
+}
+
+.login-description {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form label {
+  text-align: left;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: var(--dark-color);
+}
+
+.login-form input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 1rem;
+  transition: border 0.3s ease-in-out;
+}
+
+.login-form input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.login-button {
+  background: var(--primary-color);
+  color: var(--light-color);
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s ease-in-out;
+}
+
+.login-button:hover {
+  background: var(--secondary-color);
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  margin: -10px 0 15px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #4caf50; 
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: slideIn 0.5s ease-out;
+}
+
+.notification.error {
+  background-color: #f44336; 
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
