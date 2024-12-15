@@ -7,6 +7,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { ContentProvider } from './context/ContentContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import Error404 from './components/Error404';
 
 function App() {
   return (
@@ -25,6 +26,8 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            {/* Route 404 pour les chemins non définis */}
+            <Route path="*" element={<Error404 />} />
           </Routes>
         </div>
         <Footer />

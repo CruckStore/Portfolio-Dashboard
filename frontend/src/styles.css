@@ -16,34 +16,69 @@ body {
   color: var(--dark-color);
 }
 
+html{
+  scroll-behavior: smooth;
+}
+
 /* Navbar */
 nav {
   background-color: var(--light-color);
   box-shadow: 0 4px 6px var(--shadow-color);
-  padding: 10px 0;
+  padding: 10px 20px;
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 
-nav ul {
+.navbar-container {
   display: flex;
-  justify-content: center;
-  gap: 30px;
+  justify-content: space-between;
+  align-items: center;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-nav a {
+.navbar-center {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.navbar-center li a {
   text-decoration: none;
   color: var(--dark-color);
   font-weight: 600;
+  transition: color 0.3s ease;
 }
 
-nav a:hover {
+.navbar-center li a:hover {
   color: var(--primary-color);
 }
+
+.navbar-right {
+  margin-left: auto;
+}
+
+.login-button-nav {
+  text-decoration: none;
+  color: #fff;
+  background-color: #007bff;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.login-button-nav:hover {
+  background-color: #2f85cc;
+}
+
+/* Icônes */
+.icon {
+  margin-right: 8px;
+}
+
 
 /* Variables */
 :root {
@@ -80,6 +115,7 @@ body {
 }
 
 .hero-button {
+  scroll-behavior: smooth;
   display: inline-block;
   background: var(--light-color);
   color: var(--primary-color);
@@ -514,10 +550,6 @@ footer {
   cursor: pointer;
   font-size: 1rem;
   transition: background 0.3s ease-in-out;
-}
-
-.login-button:hover {
-  background: var(--secondary-color);
 }
 
 .error-message {
