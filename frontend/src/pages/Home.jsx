@@ -72,6 +72,13 @@ function Home() {
                 onMouseMove={(e) => handleMouseMove(e, index)}
                 onMouseLeave={() => handleMouseLeave(index)}
               >
+                {project.image && (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="project-image"
+                  />
+                )}
                 <h3>{project.title}</h3>
                 <p>{project.description}</p>
               </div>

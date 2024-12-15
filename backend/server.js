@@ -6,9 +6,12 @@ const app = express();
 const PORT = 5000;
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '5mb' }));
+app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 
 const contentFilePath = './content.json';
+
+app.use(cors());
 
 app.get('/api/content', (req, res) => {
   fs.readFile(contentFilePath, 'utf8', (err, data) => {

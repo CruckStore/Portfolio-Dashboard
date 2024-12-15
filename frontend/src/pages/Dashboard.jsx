@@ -2,12 +2,14 @@ import React, { useContext, useState, useEffect } from 'react';
 import { ContentContext } from '../context/ContentContext';
 import { useNavigate } from 'react-router-dom';
 import Notification from '../components/Notification';
+import imageCompression from 'browser-image-compression';
+
 
 function Dashboard() {
   const { content, updateContent, logout } = useContext(ContentContext);
   const [formData, setFormData] = useState({});
   const [projects, setProjects] = useState([]);
-  const [newProject, setNewProject] = useState({ title: '', description: '' });
+  const [newProject, setNewProject] = useState({ title: '', description: '', image: '' });
   const [editingIndex, setEditingIndex] = useState(null);
   const [notification, setNotification] = useState(null); 
   const navigate = useNavigate();
@@ -21,6 +23,44 @@ function Dashboard() {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 3000);
   };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) {
+      showNotification('Aucun fichier sélectionné.', 'error');
+      return;
+    }
+  
+    if (!file.type.startsWith('image/')) {
+      showNotification('Veuillez télécharger un fichier image valide.', 'error');
+      return;
+    }
+  
+    if (file.size > 5 * 1024 * 1024) {
+      showNotification('La taille de l\'image est trop grande. Limite : 5 Mo.', 'error');
+      return;
+    }
+  
+    try {
+      const options = {
+        maxSizeMB: 0.5, // Taille maximale (500 KB)
+        maxWidthOrHeight: 1024, // Dimension maximale (1024px)
+        useWebWorker: true,
+      };
+  
+      const compressedFile = await imageCompression(file, options);
+  
+      console.log('Taille après compression :', compressedFile.size / 1024, 'Ko'); // Log la taille de l'image compressée
+  
+      const base64 = await imageCompression.getDataUrlFromFile(compressedFile);
+  
+      setNewProject({ ...newProject, image: base64 });
+      showNotification('Image téléchargée et compressée avec succès !', 'success');
+    } catch (error) {
+      console.error('Erreur lors de la compression de l\'image:', error);
+      showNotification('Erreur lors du téléchargement de l\'image.', 'error');
+    }
+  };  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,19 +85,26 @@ function Dashboard() {
   };
 
   const handleSaveEditProject = () => {
-    if (newProject.title && newProject.description) {
-      const updatedProjects = projects.map((project, i) =>
-        i === editingIndex ? newProject : project
-      );
-      setProjects(updatedProjects);
-      saveProjects(updatedProjects);
-      setNewProject({ title: '', description: '' });
-      setEditingIndex(null);
-      showNotification('Projet modifié avec succès !', 'success');
-    } else {
+    if (!newProject.title || !newProject.description) {
       showNotification('Veuillez remplir tous les champs.', 'error');
+      return;
     }
+  
+    if (!newProject.image) {
+      showNotification('Veuillez ajouter une image.', 'error');
+      return;
+    }
+  
+    const updatedProjects = projects.map((project, i) =>
+      i === editingIndex ? newProject : project
+    );
+    setProjects(updatedProjects);
+    saveProjects(updatedProjects);
+    setNewProject({ title: '', description: '', image: '' });
+    setEditingIndex(null);
+    showNotification('Projet modifié avec succès !', 'success');
   };
+  
 
   const handleCancelEdit = () => {
     setEditingIndex(null);
@@ -169,6 +216,14 @@ function Dashboard() {
               onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
             ></textarea>
           </label>
+          <label>
+            <span>Image :</span>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+            />
+          </label>
           {editingIndex !== null ? (
             <div>
               <button onClick={handleSaveEditProject} className="save-button">Enregistrer les Modifications</button>
@@ -182,11 +237,23 @@ function Dashboard() {
         <div className="project-list">
           {projects.map((project, index) => (
             <div key={index} className="project-card-dashboard">
+              {project.image && (
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="project-image"
+                  style={{ width: '100%', height: 'auto', borderRadius: '8px' }}
+                />
+              )}
               <h4>{project.title}</h4>
               <p>{project.description}</p>
-              <div className='project-card-button-dashboard'>
-                <button onClick={() => handleEditProject(index)} className="edit-button">Modifier</button>
-                <button onClick={() => handleDeleteProject(index)} className="delete-button">Supprimer</button>
+              <div className="project-card-button-dashboard">
+                <button onClick={() => handleEditProject(index)} className="edit-button">
+                  Modifier
+                </button>
+                <button onClick={() => handleDeleteProject(index)} className="delete-button">
+                  Supprimer
+                </button>
               </div>
             </div>
           ))}
