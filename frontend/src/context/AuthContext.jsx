@@ -4,11 +4,10 @@ import axios from 'axios';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // Stocke les informations de l'utilisateur
-  const [loading, setLoading] = useState(true); // État de chargement
-  const [error, setError] = useState(null); // Gestion des erreurs
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
 
-  // Vérifie si l'utilisateur est connecté via localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -17,7 +16,6 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  // Fonction pour se connecter
   const login = async (username, password) => {
     try {
       setError(null);
@@ -26,17 +24,18 @@ export const AuthProvider = ({ children }) => {
         password,
       });
       setUser(response.data);
-      localStorage.setItem('user', JSON.stringify(response.data)); // Sauvegarde dans le localStorage
+      localStorage.setItem('user', JSON.stringify(response.data)); 
     } catch (err) {
       setError(err.response?.data?.message || 'Erreur de connexion');
       throw err;
     }
   };
 
-  // Fonction pour se déconnecter
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
+    setIsAuthenticated(false);
+    localStorage.removeItem("isAuthenticated");
   };
 
   return (

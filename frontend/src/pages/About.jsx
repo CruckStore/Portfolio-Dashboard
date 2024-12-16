@@ -4,7 +4,6 @@ import { ContentContext } from "../context/ContentContext";
 function About() {
   const { content, isAboutPageActive } = useContext(ContentContext);
 
-  // Afficher un message si la page À Propos est désactivée
   if (!isAboutPageActive) {
     return <p>La page À Propos est actuellement désactivée.</p>;
   }

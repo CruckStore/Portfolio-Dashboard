@@ -1,39 +1,40 @@
-import React, { useContext } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import Home from './pages/Home';
-import About from './pages/About';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import HashPassword from './pages/HashPassword';
-import MyProjects from './pages/MyProjects';
-import { AuthProvider } from './context/AuthContext';
-import { ContentProvider, ContentContext } from './context/ContentContext';
-import ProtectedRoute from './components/ProtectedRoute';
-import Error404 from './components/Error404';
+import React, { useContext } from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import HashPassword from "./pages/HashPassword";
+import MyProjects from "./pages/MyProjects";
+import { AuthProvider } from "./context/AuthContext";
+import { ContentProvider, ContentContext } from "./context/ContentContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Error404 from "./components/Error404";
 
 // Animation uniforme
 const pageTransition = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
   exit: { opacity: 0, y: -20 },
-  transition: { duration: 0.4, ease: 'easeInOut' },
+  transition: { duration: 0.4, ease: "easeInOut" },
 };
 
 function AnimatedRoutes() {
   const location = useLocation();
-  const { isHomePageActive, isProjectsPageActive, isAboutPageActive } = useContext(ContentContext);
+  const { isHomePageActive, isProjectsPageActive, isAboutPageActive } =
+    useContext(ContentContext) || {}; 
 
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        {/* Page d'accueil conditionnelle */}
-        {isHomePageActive && (
-          <Route
-            path="/"
-            element={
+        {/* Page d'accueil */}
+        <Route
+          path="/"
+          element={
+            isHomePageActive ? (
               <motion.div
                 initial={pageTransition.initial}
                 animate={pageTransition.animate}
@@ -42,15 +43,17 @@ function AnimatedRoutes() {
               >
                 <Home />
               </motion.div>
-            }
-          />
-        )}
+            ) : (
+              <Error404 />
+            )
+          }
+        />
 
-        {/* Page My Projects conditionnelle */}
-        {isProjectsPageActive && (
-          <Route
-            path="/my-projects"
-            element={
+        {/* Page My Projects */}
+        <Route
+          path="/my-projects"
+          element={
+            isProjectsPageActive ? (
               <motion.div
                 initial={pageTransition.initial}
                 animate={pageTransition.animate}
@@ -59,15 +62,17 @@ function AnimatedRoutes() {
               >
                 <MyProjects />
               </motion.div>
-            }
-          />
-        )}
+            ) : (
+              <Error404 />
+            )
+          }
+        />
 
-        {/* Page À Propos conditionnelle */}
-        {isAboutPageActive && (
-          <Route
-            path="/about"
-            element={
+        {/* Page À Propos */}
+        <Route
+          path="/about"
+          element={
+            isAboutPageActive ? (
               <motion.div
                 initial={pageTransition.initial}
                 animate={pageTransition.animate}
@@ -76,9 +81,11 @@ function AnimatedRoutes() {
               >
                 <About />
               </motion.div>
-            }
-          />
-        )}
+            ) : (
+              <Error404 />
+            )
+          }
+        />
 
         {/* Page de connexion */}
         <Route
@@ -95,7 +102,7 @@ function AnimatedRoutes() {
           }
         />
 
-        {/* Page sécurisée Dashboard */}
+        {/* Dashboard protégé */}
         <Route
           path="/dashboard"
           element={
@@ -152,7 +159,7 @@ function App() {
       <ContentProvider>
         <Router>
           <Navbar />
-          <div style={{ minHeight: 'calc(100vh - 80px)' }}>
+          <div style={{ minHeight: "calc(100vh - 80px)" }}>
             <AnimatedRoutes />
           </div>
           <Footer />

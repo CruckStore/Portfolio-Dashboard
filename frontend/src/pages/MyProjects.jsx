@@ -4,13 +4,12 @@ import { ContentContext } from "../context/ContentContext";
 function MyProjects() {
   const { content, isProjectsPageActive } = useContext(ContentContext);
 
-  // Afficher un message si la page des projets est désactivée
   if (!isProjectsPageActive) {
     return <p>La page des projets est actuellement désactivée.</p>;
   }
 
   const getProjectsData = (data) => {
-    const projects = data?.homepage?.homepage?.projects || [];
+    const projects = data?.homepage?.projects || []; // Correction ici
     const myProjectsPage = data?.myProjectsPage || {};
     return {
       projects,
@@ -57,7 +56,6 @@ function MyProjects() {
         </div>
       </section>
 
-      {/* Projects Grid */}
       {/* Projects Grid */}
       <div className="my-projects-container" id="myprojects-p">
         <header className="my-projects-header">

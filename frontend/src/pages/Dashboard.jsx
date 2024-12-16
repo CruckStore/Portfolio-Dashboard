@@ -32,7 +32,6 @@ function Dashboard() {
 
   useEffect(() => {
     if (content) {
-      // Charger les données de la page d'accueil
       if (content.homepage) {
         setFormData((prevData) => ({
           ...prevData,
@@ -54,7 +53,6 @@ function Dashboard() {
         }));
       }
 
-      // Charger les données de la page "À Propos"
       if (content.aboutPage) {
         setFormData((prevData) => ({
           ...prevData,
@@ -79,7 +77,10 @@ function Dashboard() {
         }));
       }
 
-      // Charger les données de la page "Projets"
+      if (content.homepage?.projects) {
+        setProjects(content.homepage.projects); 
+      }
+
       if (content.myProjectsPage) {
         setFormData((prevData) => ({
           ...prevData,
@@ -98,7 +99,6 @@ function Dashboard() {
 
   const [refresh, setRefresh] = useState(false);
 
-  // Rafraîchir après une mise à jour
   const saveHomePageContent = () => {
     const updatedContent = {
       ...content,
@@ -112,12 +112,25 @@ function Dashboard() {
         projects: content.homepage.projects,
       },
     };
-  
+
     updateContent(updatedContent);
     showNotification("Page d'accueil mise à jour avec succès !", "success");
-    setRefresh(!refresh); // Forcer le rafraîchissement
   };
-  
+
+  const saveOtherContent = () => {
+    const updatedContent = {
+      ...content,
+      other: {
+        footerText: formData.footerText,
+      },
+    };
+
+    updateContent(updatedContent);
+    showNotification(
+      "Contenu de la navigation et du pied de page mis à jour avec succès !",
+      "success"
+    );
+  };
 
   const showNotification = (message, type) => {
     setNotification({ message, type });
@@ -168,14 +181,23 @@ function Dashboard() {
   };
 
   const handleAddProject = () => {
-    if (newProject.title && newProject.description) {
+    if (!content || !content.homepage) {
+      showNotification("Erreur : le contenu n'est pas encore chargé.", "error");
+      return;
+    }
+
+    if (newProject.title && newProject.description && newProject.image) {
       const updatedProjects = [...projects, newProject];
       setProjects(updatedProjects);
       saveProjects(updatedProjects);
+
       setNewProject({ title: "", description: "", image: "" });
       showNotification("Projet ajouté avec succès !", "success");
     } else {
-      showNotification("Veuillez remplir tous les champs.", "error");
+      showNotification(
+        "Veuillez remplir tous les champs, y compris l'image.",
+        "error"
+      );
     }
   };
 
@@ -195,9 +217,8 @@ function Dashboard() {
       },
     };
 
-    updateContent(updatedContent); // Envoie les modifications au contexte et à l'API
+    updateContent(updatedContent); 
 
-    // Synchroniser formData avec les données mises à jour
     setFormData((prevData) => ({
       ...prevData,
       aboutHeroTitle: updatedContent.aboutPage.heroTitle,
@@ -211,11 +232,17 @@ function Dashboard() {
       aboutContactEmail: updatedContent.aboutPage.contactEmail,
     }));
 
-    // Notification de succès
     showNotification("Page À Propos mise à jour avec succès !", "success");
   };
 
   const saveProjectsPageContent = () => {
+    if (!content || !content.myProjectsPage) {
+      console.error(
+        "Content ou myProjectsPage est null. Impossible de sauvegarder les projets."
+      );
+      return;
+    }
+
     const updatedContent = {
       ...content,
       myProjectsPage: {
@@ -226,7 +253,8 @@ function Dashboard() {
         sectionDescription: formData.myProjectsSectionDescription,
       },
     };
-    updateContent(updatedContent); // Met à jour le contexte et l'API
+
+    updateContent(updatedContent); 
     showNotification("Page des projets mise à jour avec succès !", "success");
   };
 
@@ -248,11 +276,14 @@ function Dashboard() {
       );
       return;
     }
+
     const updatedProjects = projects.map((project, i) =>
       i === editingIndex ? newProject : project
     );
+
     setProjects(updatedProjects);
-    saveProjects(updatedProjects);
+    saveProjects(updatedProjects); 
+
     setNewProject({ title: "", description: "", image: "" });
     setEditingIndex(null);
     showNotification("Projet modifié avec succès !", "success");
@@ -271,18 +302,23 @@ function Dashboard() {
   };
 
   const saveProjects = (updatedProjects) => {
+    if (!content || !content.homepage) {
+      console.error(
+        "Content ou homepage est null. Impossible de sauvegarder les projets."
+      );
+      return;
+    }
+
     const updatedContent = {
       ...content,
       homepage: {
         ...content.homepage,
-        homepage: {
-          ...content.homepage.homepage,
-          projects: updatedProjects,
-          homepage: formData,
-        },
+        projects: updatedProjects,
       },
     };
-    updateContent(updatedContent);
+
+    updateContent(updatedContent); 
+    setProjects(updatedProjects); 
   };
 
   const handleLogout = () => {
@@ -542,6 +578,31 @@ function Dashboard() {
           <button
             className="save-button"
             onClick={saveAboutPageContent}
+            disabled={user?.role !== "admin"}
+          >
+            Enregistrer les Modifications
+          </button>
+        </div>
+      )}
+
+      {activeTab === "other" && (
+        <div className="dashboard-section">
+          <h2>Modifier le Pied de Page</h2>
+          <div className="dashboard-form">
+            <label>
+              <span>Texte du Pied de Page :</span>
+              <textarea
+                name="footerText"
+                value={formData.footerText || ""}
+                onChange={handleChange}
+                disabled={user?.role !== "admin"}
+              ></textarea>
+            </label>
+          </div>
+
+          <button
+            className="save-button"
+            onClick={saveOtherContent}
             disabled={user?.role !== "admin"}
           >
             Enregistrer les Modifications
