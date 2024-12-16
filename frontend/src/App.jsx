@@ -24,7 +24,7 @@ const pageTransition = {
 
 function AnimatedRoutes() {
   const location = useLocation();
-  const { isHomePageActive } = useContext(ContentContext);
+  const { isHomePageActive, isProjectsPageActive, isAboutPageActive } = useContext(ContentContext);
 
   return (
     <AnimatePresence mode="wait">
@@ -46,20 +46,39 @@ function AnimatedRoutes() {
           />
         )}
 
-        {/* Page À Propos */}
-        <Route
-          path="/about"
-          element={
-            <motion.div
-              initial={pageTransition.initial}
-              animate={pageTransition.animate}
-              exit={pageTransition.exit}
-              transition={pageTransition.transition}
-            >
-              <About />
-            </motion.div>
-          }
-        />
+        {/* Page My Projects conditionnelle */}
+        {isProjectsPageActive && (
+          <Route
+            path="/my-projects"
+            element={
+              <motion.div
+                initial={pageTransition.initial}
+                animate={pageTransition.animate}
+                exit={pageTransition.exit}
+                transition={pageTransition.transition}
+              >
+                <MyProjects />
+              </motion.div>
+            }
+          />
+        )}
+
+        {/* Page À Propos conditionnelle */}
+        {isAboutPageActive && (
+          <Route
+            path="/about"
+            element={
+              <motion.div
+                initial={pageTransition.initial}
+                animate={pageTransition.animate}
+                exit={pageTransition.exit}
+                transition={pageTransition.transition}
+              >
+                <About />
+              </motion.div>
+            }
+          />
+        )}
 
         {/* Page de connexion */}
         <Route
@@ -122,9 +141,6 @@ function AnimatedRoutes() {
             </motion.div>
           }
         />
-
-        <Route path="/my-projects" element={<MyProjects />} />
-
       </Routes>
     </AnimatePresence>
   );

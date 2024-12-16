@@ -148,6 +148,16 @@ body {
   margin: 20px 0;
 }
 
+.about p {
+  font-size: 1.2rem;
+  margin: 20px 0;
+}
+
+.contact p {
+  font-size: 1.2rem;
+  margin: 20px 0;
+}
+
 .hero-button {
   scroll-behavior: smooth;
   display: inline-block;
@@ -186,6 +196,8 @@ h2 {
   gap: 20px; 
   align-items: start;
   flex-wrap: wrap; 
+  overflow: hidden; /* Cache les cartes en excès */
+  max-height: 375px; /* Hauteur maximale pour une seule ligne */
   padding: 20px; 
   perspective: 1000px; 
 }
@@ -384,7 +396,7 @@ h2 {
 }
 
 .contact-button:hover {
-  background: var(--dark-color);
+  background-color: #005fc4;
 }
 
 /* Footer */
@@ -421,14 +433,15 @@ footer {
 }
 
 .logout-button {
-  background-color: #007bff;
   border: none;
-  color: white;
   padding: 10px 20px;
+  font-weight: bold;
   font-size: 1rem;
-  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
+  background: var(--primary-color);
+  color: var(--light-color);
+  border-radius: var(--border-radius);
+  transition: background 0.3s ease;
 }
 
 .logout-button:hover {
@@ -659,7 +672,22 @@ footer {
 }
 
 
+.projets-show-more-button {
+  border: none;
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  background: var(--primary-color);
+  color: var(--light-color);
+  border-radius: var(--border-radius);
+  transition: background 0.3s ease;
+}
 
+.projets-show-more-button:hover {
+  background-color: #005fc4;
+}
 
 
 
@@ -702,7 +730,6 @@ footer {
 }
 
 .about-content a {
-  color: #007bff;
   text-decoration: none;
 }
 
@@ -710,6 +737,9 @@ footer {
   text-decoration: underline;
 }
 
+.abt-text-p {
+  margin: 20px 100px 100px 100px;
+}
 
 
 
@@ -772,6 +802,7 @@ footer {
 
 
 .dashboard-nav {
+  z-index: 999;
   display: flex;
   justify-content: center;
   background-color: #f8f9fa;
@@ -816,4 +847,32 @@ footer {
 .hero-content-abt h1 {
   font-size: 3rem;
   margin: 0;
+}
+
+.hero-content-abt p {
+  font-size: 1.2rem;
+  margin: 20px 0;
+}
+
+/* Contact Section */
+.contact-button-abt {
+  margin-top: 30px;
+  display: inline-block;
+  background: var(--primary-color);
+  color: var(--light-color);
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.contact-button-at:hover {
+  background: var(--dark-color);
+}
+
+
+.my-projects-header p {
+  font-size: 1.2rem;
+  margin: 20px 0;
 }

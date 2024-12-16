@@ -10,6 +10,8 @@ import { ContentContext } from '../context/ContentContext';
 function Navbar() {
   const { user, logout } = useContext(AuthContext);
   const { isHomePageActive } = useContext(ContentContext); 
+  const { isProjectsPageActive } = useContext(ContentContext); 
+  const { isAboutPageActive } = useContext(ContentContext); 
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -30,6 +32,7 @@ function Navbar() {
               </button>
             </li>
           )}
+                    {isProjectsPageActive && (
           <li>
             <button
               className="logout-button"
@@ -39,6 +42,8 @@ function Navbar() {
               My Projects
             </button>
           </li>
+        )}
+                            {isAboutPageActive && (
           <li>
             <button
               className="logout-button"
@@ -48,6 +53,7 @@ function Navbar() {
               À Propos
             </button>
           </li>
+                    )}
         </div>
 
         {/* Bouton conditionnel aligné à droite */}
