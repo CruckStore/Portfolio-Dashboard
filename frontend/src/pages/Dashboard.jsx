@@ -6,13 +6,14 @@ import Notification from '../components/Notification';
 import imageCompression from 'browser-image-compression';
 
 function Dashboard() {
-  const { content, updateContent, logout } = useContext(ContentContext);
-  const { user } = useContext(AuthContext); // Accès au rôle utilisateur
+  const { content, updateContent, logout, toggleHomePage, isHomePageActive } = useContext(ContentContext);
+  const { user } = useContext(AuthContext);
   const [formData, setFormData] = useState({});
   const [projects, setProjects] = useState([]);
   const [newProject, setNewProject] = useState({ title: '', description: '', image: '' });
   const [editingIndex, setEditingIndex] = useState(null);
   const [notification, setNotification] = useState(null);
+  const [activeTab, setActiveTab] = useState('accueil');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -65,6 +66,11 @@ function Dashboard() {
     } else {
       showNotification('Veuillez remplir tous les champs.', 'error');
     }
+  };
+
+  const handleSave = () => {
+    saveProjects(projects);
+    showNotification('Contenu mis à jour avec succès !', 'success');
   };
 
   const handleEditProject = (index) => {
@@ -121,11 +127,58 @@ function Dashboard() {
 
   return (
     <div className="dashboard-container">
+      <nav className="dashboard-nav">
+        <button
+          className={`nav-tab ${activeTab === "accueil" ? "active" : ""}`}
+          onClick={() => setActiveTab("accueil")}
+        >
+          Accueil
+        </button>
+        <button
+          className={`nav-tab ${activeTab === "myProjects" ? "active" : ""}`}
+          onClick={() => setActiveTab("myProjects")}
+        >
+          My Projects
+        </button>
+        <button
+          className={`nav-tab ${activeTab === "about" ? "active" : ""}`}
+          onClick={() => setActiveTab("about")}
+        >
+          À Propos
+        </button>
+        <button
+          className={`nav-tab ${activeTab === "other" ? "active" : ""}`}
+          onClick={() => setActiveTab("other")}
+        >
+          Autre
+        </button>
+      </nav>
+
       <header className="dashboard-header">
         <h1>
-          Tableau de Bord 
-          {user?.role === 'admin' ? ' (Admin)' : ' (Lecteur)'} - {user?.username || ''}
+          Tableau de Bord {user?.role === "admin" ? "(Admin)" : "(Lecteur)"} -{" "}
+          {user?.username || "Utilisateur"}
         </h1>
+        {user?.role === "admin" && (
+          <button
+            onClick={() => toggleHomePage()}
+            className={`toggle-button ${
+              isHomePageActive ? "active" : "inactive"
+            }`}
+            style={{
+              backgroundColor: isHomePageActive ? "green" : "red",
+              color: "white",
+              padding: "10px 20px",
+              borderRadius: "5px",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            {isHomePageActive
+              ? "Désactiver la Page d'Accueil"
+              : "Activer la Page d'Accueil"}
+          </button>
+        )}
       </header>
 
       {notification && (
@@ -137,110 +190,184 @@ function Dashboard() {
       )}
 
       {/* Modification de la page d'accueil */}
-      <div className="dashboard-section">
-        <h2>Modifier la Page d'Accueil</h2>
-        <div className="dashboard-form">
-          <label>
-            <span>Titre :</span>
-            <input
-              type="text"
-              name="title"
-              value={formData.title || ''}
-              onChange={handleChange}
-              disabled={user?.role !== 'admin'} // Désactive l'édition pour les éditeurs
-            />
-          </label>
-          <label>
-            <span>Sous-titre :</span>
-            <input
-              type="text"
-              name="subtitle"
-              value={formData.subtitle || ''}
-              onChange={handleChange}
-              disabled={user?.role !== 'admin'}
-            />
-          </label>
-          <label>
-            <span>À propos :</span>
-            <textarea
-              name="about"
-              value={formData.about || ''}
-              onChange={handleChange}
-              disabled={user?.role !== 'admin'}
-            ></textarea>
-          </label>
-        </div>
-      </div>
-
-      {/* Gestion des projets */}
-      <div className="dashboard-section">
-        <h2>Gérer les Projets</h2>
-        {user?.role === 'admin' && (
+      {activeTab === "accueil" && (
+        <div className="dashboard-section">
+          {/* Formulaire pour accueil */}
+          <h2>Modifier la Page d'Accueil</h2>
           <div className="dashboard-form">
-            <h3>{editingIndex !== null ? 'Modifier le Projet' : 'Ajouter un Projet'}</h3>
             <label>
               <span>Titre :</span>
               <input
                 type="text"
-                value={newProject.title}
-                onChange={(e) => setNewProject({ ...newProject, title: e.target.value })}
+                name="title"
+                value={formData.title || ""}
+                onChange={handleChange}
+                disabled={user?.role !== "admin"}
               />
             </label>
             <label>
-              <span>Description :</span>
-              <textarea
-                value={newProject.description}
-                onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
-              ></textarea>
+              <span>Sous-titre :</span>
+              <input
+                type="text"
+                name="subtitle"
+                value={formData.subtitle || ""}
+                onChange={handleChange}
+                disabled={user?.role !== "admin"}
+              />
             </label>
             <label>
-              <span>Image :</span>
-              <input type="file" accept="image/*" onChange={handleImageUpload} />
+              <span>À propos :</span>
+              <textarea
+                name="about"
+                value={formData.about || ""}
+                onChange={handleChange}
+                disabled={user?.role !== "admin"}
+              ></textarea>
             </label>
-            {editingIndex !== null ? (
-              <div>
-                <button onClick={handleSaveEditProject} className="save-button">
-                  Enregistrer les Modifications
-                </button>
-                <button onClick={handleCancelEdit} className="cancel-button">
-                  Annuler
-                </button>
-              </div>
-            ) : (
-              <button onClick={handleAddProject} className="save-button">
-                Ajouter le Projet
-              </button>
-            )}
           </div>
-        )}
-
-        <div className="project-list">
-          {projects.map((project, index) => (
-            <div key={index} className="project-card-dashboard">
-              {project.image && (
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="project-image"
-                  style={{ width: '100%', height: 'auto', borderRadius: '8px' }}
-                />
-              )}
-              <h4>{project.title}</h4>
-              <p>{project.description}</p>
-              {user?.role === 'admin' && (
-                <div className="project-card-button-dashboard">
-                  <button onClick={() => handleEditProject(index)} className="edit-button">
-                    Modifier
-                  </button>
-                  <button onClick={() => handleDeleteProject(index)} className="delete-button">
-                    Supprimer
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
         </div>
-      </div>
+      )}
+
+      {activeTab === "myProjects" && (
+        <div className="dashboard-section">
+          {/* Formulaire et gestion des projets */}
+          <h2>Modifier la Page des Projets</h2>
+          <div className="dashboard-form">
+            <label>
+              <span>Titre :</span>
+              <input
+                type="text"
+                name="title"
+                value={formData.title || ""}
+                onChange={handleChange}
+                disabled={user?.role !== "admin"}
+              />
+            </label>
+            <label>
+              <span>Sous-titre :</span>
+              <input
+                type="text"
+                name="subtitle"
+                value={formData.subtitle || ""}
+                onChange={handleChange}
+                disabled={user?.role !== "admin"}
+              />
+            </label>
+            <label>
+              <span>À propos :</span>
+              <textarea
+                name="about"
+                value={formData.about || ""}
+                onChange={handleChange}
+                disabled={user?.role !== "admin"}
+              ></textarea>
+            </label>
+            <h2>
+              {editingIndex !== null
+                ? "Modifier le Projet"
+                : "Ajouter un Projet"}
+            </h2>
+            {/* Gestion des projets */}
+            {user?.role === "admin" && (
+              <div className="dashboard-form">
+                <label>
+                  <span>Titre :</span>
+                  <input
+                    type="text"
+                    value={newProject.title}
+                    onChange={(e) =>
+                      setNewProject({ ...newProject, title: e.target.value })
+                    }
+                  />
+                </label>
+                <label>
+                  <span>Description :</span>
+                  <textarea
+                    value={newProject.description}
+                    onChange={(e) =>
+                      setNewProject({
+                        ...newProject,
+                        description: e.target.value,
+                      })
+                    }
+                  ></textarea>
+                </label>
+                <label>
+                  <span>Image :</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                  />
+                </label>
+                {editingIndex !== null ? (
+                  <div>
+                    <button
+                      onClick={handleSaveEditProject}
+                      className="save-button"
+                    >
+                      Enregistrer les Modifications
+                    </button>
+                    <button
+                      onClick={handleCancelEdit}
+                      className="cancel-button"
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                ) : (
+                  <button onClick={handleAddProject} className="save-button">
+                    Ajouter le Projet
+                  </button>
+                )}
+              </div>
+            )}
+
+            <h2>Gérer les Projets</h2>
+
+            <div className="project-list">
+              {projects.map((project, index) => (
+                <div key={index} className="project-card-dashboard">
+                  {project.image && (
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="project-image"
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                        borderRadius: "8px",
+                      }}
+                    />
+                  )}
+                  <h4>{project.title}</h4>
+                  <p>{project.description}</p>
+                  {user?.role === "admin" && (
+                    <div className="project-card-button-dashboard">
+                      <button
+                        onClick={() => handleEditProject(index)}
+                        className="edit-button"
+                      >
+                        Modifier
+                      </button>
+                      <button
+                        onClick={() => handleDeleteProject(index)}
+                        className="delete-button"
+                      >
+                        Supprimer
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <button onClick={handleSave} className="save-button">
+        Enregistrer les Modifications
+      </button>
     </div>
   );
 }

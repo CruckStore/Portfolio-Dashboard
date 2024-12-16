@@ -74,7 +74,7 @@ app.post('/api/login', (req, res) => {
   }
 
   console.log(`Connexion réussie pour l'utilisateur "${username}".`);
-  res.json({ message: 'Connexion réussie', role: user.role });
+  res.json({ message: 'Connexion réussie', username: user.username, role: user.role });
 });
 
 

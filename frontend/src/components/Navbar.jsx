@@ -2,12 +2,16 @@ import React, { useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faSignInAlt, faSignOutAlt, faTachometerAlt } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { AuthContext } from '../context/AuthContext';
+import { ContentContext } from '../context/ContentContext'; 
 
 function Navbar() {
   const { user, logout } = useContext(AuthContext);
+  const { isHomePageActive } = useContext(ContentContext); 
   const location = useLocation();
-  const navigate = useNavigate(); // Utilisation de navigate pour gérer les redirections
+  const navigate = useNavigate();
 
   const isDashboardPage = location.pathname === '/dashboard';
 
@@ -16,12 +20,23 @@ function Navbar() {
       <ul className="navbar-container">
         {/* Liens centrés */}
         <div className="navbar-center">
+          {isHomePageActive && (
+            <li>
+              <button
+                className="logout-button"
+                onClick={() => navigate('/')}
+              >
+                <FontAwesomeIcon icon={faHome} className="icon" /> Accueil
+              </button>
+            </li>
+          )}
           <li>
             <button
               className="logout-button"
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/my-projects')}
             >
-              <FontAwesomeIcon icon={faHome} className="icon" /> Accueil
+              <FontAwesomeIcon icon={faFolderOpen} className="icon" style={{ marginRight: '8px' }} />
+              My Projects
             </button>
           </li>
           <li>
@@ -29,6 +44,7 @@ function Navbar() {
               className="logout-button"
               onClick={() => navigate('/about')}
             >
+              <FontAwesomeIcon icon={faInfoCircle} className="icon" style={{ marginRight: '8px' }} />
               À Propos
             </button>
           </li>
@@ -39,12 +55,10 @@ function Navbar() {
           <li>
             {user ? (
               isDashboardPage ? (
-                // Affiche Déconnexion uniquement sur /dashboard
                 <button onClick={logout} className="logout-button">
                   <FontAwesomeIcon icon={faSignOutAlt} className="icon" /> Déconnexion
                 </button>
               ) : (
-                // Affiche un bouton pour accéder au Dashboard sur les autres pages
                 <button
                   className="logout-button"
                   onClick={() => navigate('/dashboard')}
@@ -53,12 +67,11 @@ function Navbar() {
                 </button>
               )
             ) : (
-              // Si non connecté, affiche le bouton Login
               <button
                 className="logout-button"
                 onClick={() => navigate('/login')}
               >
-                <FontAwesomeIcon icon={faSignInAlt} className="icon" /> Login
+                <FontAwesomeIcon icon={faSignInAlt} className="icon" /> Connexion
               </button>
             )}
           </li>

@@ -45,23 +45,32 @@ function Home() {
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
-          <h1>{homepage.title || 'Bienvenue sur mon Portfolio'}</h1>
-          <p>{homepage.subtitle || 'Découvrez mes projets et expériences'}</p>
-          <a href="#contact" className="hero-button">Me Contacter</a>
+          <h1>{homepage.title || "Bienvenue sur mon Portfolio"}</h1>
+          <p>{homepage.subtitle || "Découvrez mes projets et expériences"}</p>
+          <a href="#contact" className="hero-button">
+            Me Contacter
+          </a>
         </div>
       </section>
 
       {/* À Propos Section */}
       <section className="about">
-        <h2>À Propos</h2>
+        <h2 className="projects-home-text-big">À Propos</h2>
         <p>
-          {homepage.about || 'Je suis un développeur passionné par la création de sites web modernes et fonctionnels.'}
+          {homepage.about ||
+            "Je suis un développeur passionné par la création de sites web modernes et fonctionnels."}
         </p>
+        <button
+          className="logout-button"
+          onClick={() => (window.location.href = "/about")}
+        >
+          Voir Plus
+        </button>
       </section>
 
       {/* Projets Section */}
       <section className="projects">
-        <h2>Mes Projets</h2>
+        <h2 className="projects-home-text-big">Mes Projets</h2>
         <div className="project-grid">
           {projects.length > 0 ? (
             projects.map((project, index) => (
@@ -87,11 +96,17 @@ function Home() {
             <p>Aucun projet disponible pour le moment.</p>
           )}
         </div>
+        <button
+          className="logout-button"
+          onClick={() => (window.location.href = "/about")}
+        >
+          Voir Plus
+        </button>
       </section>
 
       {/* Compétences Section */}
       <section className="skills">
-        <h2>Compétences</h2>
+        <h2 className="projects-home-text-big">Compétences</h2>
         <div className="skills-list">
           <div className="skill-item">HTML & CSS</div>
           <div className="skill-item">JavaScript</div>
@@ -104,8 +119,11 @@ function Home() {
 
       {/* Contact Section */}
       <section className="contact" id="contact">
-        <h2>Me Contacter</h2>
-        <p>Vous avez un projet ou une idée en tête ? N'hésitez pas à me contacter !</p>
+        <h2 className="projects-home-text-big">Me Contacter</h2>
+        <p>
+          Vous avez un projet ou une idée en tête ? N'hésitez pas à me contacter
+          !
+        </p>
         <a href="mailto:contact@email.com" className="contact-button">
           Envoyer un Email
         </a>

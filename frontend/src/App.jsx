@@ -1,15 +1,134 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import Home from './pages/Home';
+import About from './pages/About';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import HashPassword from './pages/HashPassword';
-import { AuthProvider } from './context/AuthContext'; 
-import { ContentProvider } from './context/ContentContext';
+import MyProjects from './pages/MyProjects';
+import { AuthProvider } from './context/AuthContext';
+import { ContentProvider, ContentContext } from './context/ContentContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Error404 from './components/Error404';
+
+// Animation uniforme
+const pageTransition = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 },
+  transition: { duration: 0.4, ease: 'easeInOut' },
+};
+
+function AnimatedRoutes() {
+  const location = useLocation();
+  const { isHomePageActive } = useContext(ContentContext);
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        {/* Page d'accueil conditionnelle */}
+        {isHomePageActive && (
+          <Route
+            path="/"
+            element={
+              <motion.div
+                initial={pageTransition.initial}
+                animate={pageTransition.animate}
+                exit={pageTransition.exit}
+                transition={pageTransition.transition}
+              >
+                <Home />
+              </motion.div>
+            }
+          />
+        )}
+
+        {/* Page À Propos */}
+        <Route
+          path="/about"
+          element={
+            <motion.div
+              initial={pageTransition.initial}
+              animate={pageTransition.animate}
+              exit={pageTransition.exit}
+              transition={pageTransition.transition}
+            >
+              <About />
+            </motion.div>
+          }
+        />
+
+        {/* Page de connexion */}
+        <Route
+          path="/login"
+          element={
+            <motion.div
+              initial={pageTransition.initial}
+              animate={pageTransition.animate}
+              exit={pageTransition.exit}
+              transition={pageTransition.transition}
+            >
+              <Login />
+            </motion.div>
+          }
+        />
+
+        {/* Page sécurisée Dashboard */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <motion.div
+                initial={pageTransition.initial}
+                animate={pageTransition.animate}
+                exit={pageTransition.exit}
+                transition={pageTransition.transition}
+              >
+                <Dashboard />
+              </motion.div>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Page pour hacher un mot de passe */}
+        <Route
+          path="/hash-password"
+          element={
+            <motion.div
+              initial={pageTransition.initial}
+              animate={pageTransition.animate}
+              exit={pageTransition.exit}
+              transition={pageTransition.transition}
+            >
+              <HashPassword />
+            </motion.div>
+          }
+        />
+
+        {/* Page 404 */}
+        <Route
+          path="*"
+          element={
+            <motion.div
+              initial={pageTransition.initial}
+              animate={pageTransition.animate}
+              exit={pageTransition.exit}
+              transition={pageTransition.transition}
+            >
+              <Error404 />
+            </motion.div>
+          }
+        />
+
+        <Route path="/my-projects" element={<MyProjects />} />
+
+      </Routes>
+    </AnimatePresence>
+  );
+}
 
 function App() {
   return (
@@ -18,29 +137,7 @@ function App() {
         <Router>
           <Navbar />
           <div style={{ minHeight: 'calc(100vh - 80px)' }}>
-            <Routes>
-              {/* Page d'accueil */}
-              <Route path="/" element={<Home />} />
-
-              {/* Page de connexion */}
-              <Route path="/login" element={<Login />} />
-
-              {/* Page sécurisée Dashboard */}
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* Page pour générer un mot de passe haché */}
-              <Route path="/hash-password" element={<HashPassword />} />
-
-              {/* Route 404 pour les chemins non définis */}
-              <Route path="*" element={<Error404 />} />
-            </Routes>
+            <AnimatedRoutes />
           </div>
           <Footer />
         </Router>
