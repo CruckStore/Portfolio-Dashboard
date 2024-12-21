@@ -2,13 +2,15 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const fs = require('fs');
-const bcrypt = require('bcryptjs'); // Pour le hachage des mots de passe
+const path = require('path');
+const bcrypt = require('bcryptjs');
 const app = express();
 const PORT = 5000;
 
-// Chemins des fichiers JSON
+// Chemins des fichiers
 const contentFilePath = './content.json';
 const usersFilePath = './users.json';
+const localesDir = './locales';
 
 // Middleware
 app.use(cors());
@@ -37,6 +39,54 @@ const writeJSONFile = (filePath, data, res) => {
   }
 };
 
+// Routes pour les langues
+// Route pour récupérer toutes les traductions
+app.get('/api/locales', (req, res) => {
+  try {
+    const locales = {};
+
+    fs.readdirSync(localesDir).forEach((file) => {
+      if (file.endsWith('.json')) {
+        const lang = file.replace('.json', '');
+        const content = JSON.parse(fs.readFileSync(path.join(localesDir, file), 'utf8'));
+        locales[lang] = content;
+      }
+    });
+
+    res.json(locales);
+  } catch (error) {
+    console.error('Erreur lors du chargement des fichiers de langues :', error);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+
+// Route pour mettre à jour une traduction
+app.post('/api/locales/update', (req, res) => {
+  const { lang, key, value } = req.body;
+
+  if (!lang || !key || !value) {
+    return res.status(400).json({ message: 'Langue, clé et valeur sont requis.' });
+  }
+
+  const filePath = path.join(localesDir, `${lang}.json`);
+
+  try {
+    let content = {};
+
+    if (fs.existsSync(filePath)) {
+      content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    }
+
+    content[key] = value;
+
+    fs.writeFileSync(filePath, JSON.stringify(content, null, 2));
+    res.json({ message: 'Traduction mise à jour avec succès.' });
+  } catch (error) {
+    console.error(`Erreur lors de la mise à jour du fichier ${filePath} :`, error);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+
 // Routes pour le contenu
 app.get('/api/content', (req, res) => {
   const content = readJSONFile(contentFilePath, res);
@@ -53,6 +103,7 @@ app.post('/api/content', (req, res) => {
   res.json({ message: 'Contenu mis à jour avec succès' });
 });
 
+// Routes pour la gestion des utilisateurs
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
   console.log('Tentative de connexion avec :', username);
@@ -77,8 +128,6 @@ app.post('/api/login', (req, res) => {
   res.json({ message: 'Connexion réussie', username: user.username, role: user.role });
 });
 
-
-// Route pour ajouter un utilisateur
 app.post('/api/users', async (req, res) => {
   const { username, password, role } = req.body;
 
