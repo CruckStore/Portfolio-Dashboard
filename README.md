@@ -48,7 +48,7 @@ Navigate to the `backend` folder and set up the server:
 ```bash
 cd backend
 npm install -g pm2
-pm install
+npm install
 pm2 start server.js
 ```
 
@@ -77,5 +77,17 @@ If you have a better solution for serving the frontend or running the backend, f
 ## :clock3: Development Timeline
 
 This project was built in under **10 hours**! ⏱️
+
+---
+
+## 📣 Join Our Community
+
+📢 **Join our Discord Server:** [discord.gg/cruckstore](https://discord.gg/cruckstore)  
+Chat with me and the community, share ideas, and get support for your projects!
+
+💡 **Want a custom project?**  
+Add me on Discord: `gtol` and let's discuss your ideas!
+
+---
 
 Thank you for checking out the project. Feel free to contribute and make it even better! ❤️
